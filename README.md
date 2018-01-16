@@ -38,3 +38,9 @@
 for sent in brown.sents():
     NLP().find_useful_stuff(re.sub(r'[^\w]', ' ', ' '.join(sent)))
 ```
+
+## Run Tests
+```bash
+cd src/
+python -m pytest tests/
+```
