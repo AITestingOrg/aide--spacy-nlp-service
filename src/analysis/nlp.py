@@ -4,7 +4,7 @@ from spacy import displacy
 from ..common.models.node import Node
 from .algorithms.subject_object_extraction import findSVOs
 from ..common.persitence.wrapper_factory import WrapperFactory
-from .algorithms.question_classifier import is_question
+from .algorithms.question_classifier import question_likelihood
 
 nlp = spacy.load('en')
 state = {}
@@ -57,7 +57,7 @@ class NLP:
         output['structure'] = {}
 
         # Determine if this is a question
-        output['is_question'] = is_question(sent)
+        output['is_question'] = question_likelihood(sent)
 
         # Entities
         output['entities'] = self.extract_entities(sent)
