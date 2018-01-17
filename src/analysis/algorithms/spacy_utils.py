@@ -9,8 +9,10 @@ def extract_debug_data(self, spacy, parsedData):
              ' '.join([t.orth_ for t in token.rights])])
     return lexicon, deps
 
+
 def extract_debug_graphs(self, spacy, parsedData):
     return [displacy.render(parsedData, style='dep'), displacy.render(parsedData, style='ent')]
+
 
 def extract_entities(self, spacy, parsedData):
     entities = []
