@@ -1,10 +1,7 @@
 import spacy
-from spacy import displacy
 
-from ..common.models.node import Node
-from .algorithms.subject_object_extraction import findSVOs
-from ..common.persitence.wrapper_factory import WrapperFactory
-from .algorithms.question_classifier import question_likelihood
+from algorithms.subject_object_extraction import findSVOs
+from algorithms.question_classifier import question_likelihood
 
 nlp = spacy.load('en')
 state = {}
@@ -12,8 +9,6 @@ state = {}
 
 class NLP:
     def __init__(self):
-        self.db = WrapperFactory.build_neo4j_wrapper(
-            'localhost', 7687, 'neo4j', 'test')
         self.nsubj = None
 
     def annotate(self, text, debug=False):
@@ -37,7 +32,7 @@ class NLP:
             sent = ''.join(sent.string.strip())
             if len(sent) > 3:
                 sent = nlp(sent)
-                self.process_sentence(sent, output, debug, write)
+                self.process_sentence(sent, output, debug)
 
         if 'nsubj' in output['structure']:
             ideas = self.db.get_direct_relations(self.nsubj.lemma_)
@@ -52,7 +47,7 @@ class NLP:
 
         return output
 
-    def process_sentence(self, sent, output, debug, write):
+    def process_sentence(self, sent, output, debug):
         print('TEXT ' + sent.text)
         output['structure'] = {}
 
@@ -90,16 +85,6 @@ class NLP:
                     token.lemma_, token.head.lemma_).single()
                 output['answer'] = answer['node'].properties['name'] if answer != None else None
 
-        if write:
-            for svo in output['svos']:
-                if output['is_question'] == False:
-                    print(' '.join(svo))
-                    svoParsed = nlp(' '.join(svo))
-                    if spacy.explain(svoParsed[0].tag_).startswith('noun') and svoParsed[1].lemma_ != '!':
-                        print('Inserting svo')
-                        self.db.insert_edge(
-                            svoParsed[0].lemma_, svoParsed[2].lemma_, svoParsed[1].lemma_)
-
         if output['is_question'] and 'nsubj' in output['structure'] and output['structure']['nsubj'] in state and state[output['structure']['nsubj']] == True:
             output['result'] = output['structure']['nsubj']
 
@@ -113,4 +98,3 @@ class NLP:
 
             # Display graph
             output['svgs'] = self.extract_debug_graphs(sent)
-

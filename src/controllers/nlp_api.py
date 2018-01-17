@@ -12,5 +12,5 @@ def get_annotated_text(text):
 
 
 @nlp.route("/annotate--debug/<text>", methods=['GET'])
-def get_annotated_text(text):
+def get_annotated_debug_text(text):
     return Api.respond(NLP().annotate(text, True), True)

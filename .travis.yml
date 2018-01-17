@@ -3,6 +3,7 @@ python:
   - "3.6"
 install:
   - pip install pylint
+  - pip install -U spacy
   - pip install -r requirements.txt
 before_script:
   - pylint --version
