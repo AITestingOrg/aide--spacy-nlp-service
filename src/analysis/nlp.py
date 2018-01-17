@@ -7,7 +7,7 @@ nlp = spacy.load('en')
 state = {}
 
 
-class NLP:
+class NLP(object):
     def __init__(self):
         self.nsubj = None
 
