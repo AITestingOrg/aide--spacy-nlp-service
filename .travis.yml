@@ -7,4 +7,4 @@ install:
 before_script:
   - pylint --version
 script:
-  - ./build.sh
+  - sh ./build.sh
