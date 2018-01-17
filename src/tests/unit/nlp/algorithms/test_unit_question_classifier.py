@@ -1,4 +1,4 @@
-from analysis.algorithms.question_classifier import question_likelihood
+from .....analysis.algorithms.question_classifier import question_likelihood
 import tests.unit.utils.spacy_utils as utils
 import spacy
 
