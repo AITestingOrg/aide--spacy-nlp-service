@@ -5,9 +5,10 @@
     If a sentence starts with one of these it is almost always a question.
     If it does not, then the likelihood is zero until further analysis is node.
     """
+import spacy
 
 
-def question_likelihood(spacy, parsed_data, sub_component=False):
+def question_likelihood(parsed_data, sub_component=False):
     """
     Determines likelihood that a parsed spacy sentence is a question.
 
@@ -62,7 +63,7 @@ def question_likelihood(spacy, parsed_data, sub_component=False):
 
         if len(component_tokens) > 1:
             is_question = max(
-                [question_likelihood(spacy, component, True)
+                [question_likelihood(component, True)
                  for component in component_tokens if len(component) > 0])
 
     return is_question
