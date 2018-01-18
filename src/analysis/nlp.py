@@ -1,7 +1,10 @@
 import spacy
 
-from algorithms.subject_object_extraction import findSVOs
-from algorithms.question_classifier import question_likelihood
+from .algorithms.subject_object_extraction import find_svos
+from .algorithms.question_classifier import question_likelihood
+from .algorithms.spacy_utils import extract_entities
+from .algorithms.spacy_utils import extract_debug_data
+from .algorithms.spacy_utils import extract_debug_graphs
 
 nlp = spacy.load('en')
 state = {}
@@ -12,8 +15,7 @@ class NLP(object):
         self.nsubj = None
 
     def annotate(self, text, debug=False):
-        output = {}
-        output['text'] = text
+        output = {'text': text}
         if len(text.split(' ')) == 1:
             ideas = self.db.get_direct_relations(text.strip())
             related_nodes = {}
@@ -26,9 +28,9 @@ class NLP(object):
                                for edge in related_nodes]
             return output
 
-        parsedData = nlp(text)
+        parsed_data = nlp(text)
 
-        for sent in parsedData.sents:
+        for sent in parsed_data.sents:
             sent = ''.join(sent.string.strip())
             if len(sent) > 3:
                 sent = nlp(sent)
@@ -55,10 +57,10 @@ class NLP(object):
         output['is_question'] = question_likelihood(sent)
 
         # Entities
-        output['entities'] = self.extract_entities(sent)
+        output['entities'] = extract_entities(sent)
 
         # Find all the subject verb pairs
-        output['svos'] = findSVOs(sent)
+        output['svos'] = find_svos(sent)
         nsubj_exp = ''
         for token in sent:
             print(token.text.lower(), token.dep_, nsubj_exp)
@@ -69,7 +71,7 @@ class NLP(object):
 
                 answer = self.db.get_node_from_relationship(
                     token.lemma_, token.head.lemma_).single()
-                output['answer'] = answer['node'].properties['name'] if answer != None else None
+                output['answer'] = answer['node'].properties['name'] if answer is not None else None
             elif token.dep_ == 'ROOT':
                 output['structure']['root'] = token.text.lower()
             elif output['is_question'] and token.dep_ == 'dobj' or \
@@ -83,18 +85,18 @@ class NLP(object):
                 print('Querying for answer')
                 answer = self.db.get_node_from_relationship(
                     token.lemma_, token.head.lemma_).single()
-                output['answer'] = answer['node'].properties['name'] if answer != None else None
+                output['answer'] = answer['node'].properties['name'] if answer is not None else None
 
-        if output['is_question'] and 'nsubj' in output['structure'] and output['structure']['nsubj'] in state and state[output['structure']['nsubj']] == True:
+        if output['is_question'] and 'nsubj' in output['structure'] and output['structure']['nsubj'] in state and state[output['structure']['nsubj']]:
             output['result'] = output['structure']['nsubj']
 
         if debug:
             output['lexicon'] = []
             output['dependencies'] = []
             # Lexicon and Dependencies
-            lexicon, deps = self.extract_debug_data(sent)
+            lexicon, deps = extract_debug_data(spacy, sent)
             output['lexicon'].extend(lexicon)
             output['dependencies'].extend(deps)
 
             # Display graph
-            output['svgs'] = self.extract_debug_graphs(sent)
+            output['svgs'] = extract_debug_graphs(spacy, sent)
