@@ -6,3 +6,5 @@ COPY ./requirements.txt /app
 WORKDIR /app
 RUN pip install -r requirements.txt
 USER flask
+EXPOSE 5000
+CMD python /app/app.py
