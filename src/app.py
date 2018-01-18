@@ -1,5 +1,5 @@
 from flask import Flask
-from .controllers.nlp_api import nlp
+from controllers.nlp_api import nlp
 from flask_cors import CORS
 
 # initialize the flask app

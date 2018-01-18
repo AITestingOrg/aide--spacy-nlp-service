@@ -1,5 +1,5 @@
 from flask import Blueprint
-from ..analysis.nlp import NLP
+from analysis.nlp import NLP
 from .api import Api
 
 # Create new blueprint with base path
