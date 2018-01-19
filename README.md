@@ -1,5 +1,5 @@
 # AI Domain Expert
-![alt text](https://travis-ci.org/AITestingOrg/domain-expert-prototype.svg?branch=master "Build Status")
+![alt text](https://travis-ci.org/AITestingOrg/aide--spacy-nlp-service.svg?branch=master "Build Status")
 
 # Setup
 ## Requirements
