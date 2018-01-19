@@ -1,3 +1,5 @@
+"""Tests some of the helper methods in spacy utils"""
+
 import tests.unit.utils.spacy_utils as utils
 from analysis.algorithms.spacy_utils import extract_compound_dependencies
 from analysis.algorithms.spacy_utils import extract_dependencies

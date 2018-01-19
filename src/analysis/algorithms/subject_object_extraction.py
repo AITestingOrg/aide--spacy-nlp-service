@@ -3,6 +3,11 @@ OBJECTS = ["dobj", "dative", "attr", "oprd"]
 
 
 def get_subs_from_conjunctions(subs):
+    """
+    Extracts subjects from a sentence that had conjunction.
+    :param subs: the list of the already extracted subjects
+    :return: a list with the added subjects found.
+    """
     more_subs = []
     for sub in subs:
         # rights is a generator
@@ -17,6 +22,11 @@ def get_subs_from_conjunctions(subs):
 
 
 def get_objects_from_conjunctions(objs):
+    """
+    Extracts objects from a sentence that had conjunction.
+    :param objs: the list of the already extracted objects
+    :return: a list with the added objects found.
+    """
     more_objs = []
     for obj in objs:
         # rights is a generator
@@ -31,6 +41,11 @@ def get_objects_from_conjunctions(objs):
 
 
 def get_verbs_from_conjunctions(verbs):
+    """
+    Extracts verbs from a sentence that had conjunction.
+    :param verbs: the list of the already extracted verbs
+    :return: a list with the added verbs found.
+    """
     more_verbs = []
     for verb in verbs:
         right_deps = {tok.lower_ for tok in verb.rights}
@@ -43,6 +58,11 @@ def get_verbs_from_conjunctions(verbs):
 
 
 def find_subs(tok):
+    """
+    Extracts subjects from a list of tokens.
+    :param tok: the list of the already parsed tokens
+    :return: a list with the subjects found.
+    """
     head = tok.head
     while head.pos_ != "VERB" and head.pos_ != "NOUN" and head.head != head:
         head = head.head
@@ -60,6 +80,11 @@ def find_subs(tok):
 
 
 def is_negated(tok):
+    """
+    Checks if a token is negated.
+    :param tok: the token to be checked.
+    :return: True if the token is negated, False otherwise.
+    """
     negations = {"no", "not", "n't", "never", "none"}
     for dep in list(tok.lefts) + list(tok.rights):
         if dep.lower_ in negations:
@@ -68,6 +93,11 @@ def is_negated(tok):
 
 
 def find_svs(tokens):
+    """
+    Extracts subject-verb pairs from a list of tokens.
+    :param tokens: the list of the already parsed tokens
+    :return: a list of tuples with the subjects-verb pairs found.
+    """
     svs = []
     verbs = [tok for tok in tokens if tok.pos_ == "VERB"]
     for verb in verbs:
@@ -102,7 +132,7 @@ def get_objs_from_attributes(deps):
     return None, None
 
 
-def get_obj_from_open_clausal_complement(deps):
+def get_obj_from_xcomp(deps):
     for dep in deps:
         if dep.pos_ == "VERB" and dep.dep_ == "xcomp":
             verb = dep
@@ -115,6 +145,11 @@ def get_obj_from_open_clausal_complement(deps):
 
 
 def get_all_subs(verb):
+    """
+    Extracts all the subjects associated to a verb.
+    :param verb: the verb to look subjects associated with it.
+    :return: a tuple with the list of subjects and a boolean representing if the verb is negated.
+    """
     verb_negated = is_negated(verb)
     subs = [tok for tok in verb.lefts if tok.dep_ in SUBJECTS and tok.pos_ != "DET"]
     if subs:
@@ -126,11 +161,16 @@ def get_all_subs(verb):
 
 
 def get_all_objs(verb):
+    """
+    Extracts all the objects associated to a verb.
+    :param verb: the verb to look subjects associated with it.
+    :return: a tuple with the verb and a list of objects
+    """
     # rights is a generator
     rights = list(verb.rights)
     objs = [tok for tok in rights if tok.dep_ in OBJECTS]
     objs.extend(get_objs_from_prepositions(rights))
-    potential_new_verb, potential_new_objs = get_obj_from_open_clausal_complement(rights)
+    potential_new_verb, potential_new_objs = get_obj_from_xcomp(rights)
     if potential_new_verb is not None and potential_new_objs is not None and potential_new_objs:
         objs.extend(potential_new_objs)
         verb = potential_new_verb
@@ -140,6 +180,11 @@ def get_all_objs(verb):
 
 
 def find_svos(tokens):
+    """
+    Extracts all the subject-verb objects in a list of tokens.
+    :param tokens: the parsed list.
+    :return: a list of the subject verb objects.
+    """
     svos = []
     verbs = [tok for tok in tokens if tok.pos_ == "VERB" and tok.dep_ != "aux"]
     for verb in verbs:
@@ -151,5 +196,5 @@ def find_svos(tokens):
                 for obj in objs:
                     obj_negated = is_negated(obj)
                     svos.append((sub.lower_, "!" + verb.lower_
-                                if verb_negated or obj_negated else verb.lower_, obj.lower_))
+                                 if verb_negated or obj_negated else verb.lower_, obj.lower_))
     return svos

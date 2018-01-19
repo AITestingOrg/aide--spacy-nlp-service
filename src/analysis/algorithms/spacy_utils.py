@@ -16,7 +16,8 @@ def extract_lexicon(spacy, parsed_data):
     """
     lexicon = []
     for token in parsed_data:
-        lexicon.append([token.orth_, spacy.explain(token.pos_), spacy.explain(token.tag_), token.tag_, token.lemma_])
+        lexicon.append([token.orth_, spacy.explain(token.pos_),
+                        spacy.explain(token.tag_), token.tag_, token.lemma_])
     return lexicon
 
 
@@ -32,7 +33,8 @@ def extract_dependencies(parsed_data):
     """
     deps = []
     for token in parsed_data:
-        deps.append([token.orth_, token.dep_, token.head.orth_, ' '.join([t.orth_ for t in token.lefts]),
+        deps.append([token.orth_, token.dep_, token.head.orth_,
+                     ' '.join([t.orth_ for t in token.lefts]),
                      ' '.join([t.orth_ for t in token.rights])])
     return deps
 
@@ -50,7 +52,8 @@ def extract_compound_dependencies(parsed_data):
     deps = []
     for token in parsed_data:
         if token.dep_ == "compound":
-            deps.append([token.orth_, token.dep_, token.head.orth_, ' '.join([t.orth_ for t in token.lefts]),
+            deps.append([token.orth_, token.dep_, token.head.orth_,
+                         ' '.join([t.orth_ for t in token.lefts]),
                          ' '.join([t.orth_ for t in token.rights])])
     return deps
 
@@ -80,7 +83,8 @@ def extract_debug_graphs(spacy, parsed_data):
     Returns:
     list - a list of the dependencies inside parsed_data.
     """
-    return [spacy.displacy.render(parsed_data, style='dep'), spacy.displacy.render(parsed_data, style='ent')]
+    return [spacy.displacy.render(parsed_data, style='dep'),
+            spacy.displacy.render(parsed_data, style='ent')]
 
 
 def extract_entities(parsed_data):
