@@ -16,7 +16,9 @@
 * Choose whichever Corpora.
 
 ### Install SpaCy
-* `pip install -u spacy`
+* `pip install -U spacy`
+* Then install the English language.
+* `python -m spacy download en`
 * On Windows ensure you have Visual Studio C++ Build Tools 2015 installed from http://landinghub.visualstudio.com/visual-cpp-build-tools
 
 ### Install Neo4j
