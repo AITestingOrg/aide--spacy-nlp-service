@@ -39,7 +39,7 @@ def test_number_of_dependencies(sent, expected_count):
     assert len(tokens) == expected_count
 
 
-@pytest.mark.parametrize("sent,count", TEST_DATA_COMPOUND_COUNT)
+@pytest.mark.parametrize("sent,expected_count", TEST_DATA_COMPOUND_COUNT)
 def test_compound_detected(sent, expected_count):
     """
     Tests that the expected number of compound dependencies are found in a given sentence.
