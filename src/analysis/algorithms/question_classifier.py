@@ -62,8 +62,7 @@ def question_likelihood(parsed_data, sub_component=False):
             component_tokens[i].append(token)
 
         if len(component_tokens) > 1:
-            is_question = max(
-                [question_likelihood(component, True)
-                 for component in component_tokens if len(component) > 0])
+            is_question = max([question_likelihood(component, True)
+                               for component in component_tokens if component])
 
     return is_question
